@@ -1,4 +1,4 @@
-# stage 1: builder
+# Stage 1: Prepare frontend files
 FROM alpine:3.22 AS builder
 
 WORKDIR /app
@@ -6,11 +6,12 @@ WORKDIR /app
 COPY public/ ./public/
 COPY nginx/default.conf.template ./nginx/default.conf.template
 
-# stage 2 : production
+# Stage 2: Nginx web server
 FROM nginx:alpine AS production
 
 COPY --from=builder /app/public/ /usr/share/nginx/html/
-COPY --from=builder /app/nginx/default.cont.template /etc/nginx/template/default.conf.template
+COPY --from=builder /app/nginx/default.conf.template /etc/nginx/templates/default.conf.template
 
 EXPOSE 80
-CMD ["nginx", "-g" ,"daemon off;"]
+
+CMD ["nginx", "-g", "daemon off;"]
